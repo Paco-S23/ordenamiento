@@ -1,0 +1,169 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+void quicksort(int lista[], int primero, int ultimo) {
+    int pivot, i, j, temp;
+
+    if (primero < ultimo) {
+        pivot = primero;
+        i = primero;
+        j = ultimo;
+        while (i < j) {
+            while (lista[i] <= lista[pivot] && i <= ultimo) {
+                i++;
+            }
+            while (lista[j] > lista[pivot] && j >= primero) {
+                j--;
+            }
+
+            if (i < j) {
+                temp = lista[i];
+                lista[i] = lista[j];
+                lista[j] = temp;
+            }
+        }
+        temp = lista[j];
+        lista[j] = lista[pivot];
+        lista[pivot] = temp;
+        quicksort(lista, primero, j - 1);
+        quicksort(lista, j + 1, ultimo);
+    }
+}
+
+int min(int b[], int l) {
+    int a = 1000000;
+    int index = -1;
+
+    for (int i = 0; i < l; i++) {
+        if (b[i] < a) {
+            a = b[i];
+            index = i;
+        }
+    }
+
+    return b[index];  
+}
+
+int max(int b[], int l) {
+    int a = -1000000;
+    int index = -1;
+
+    for (int i = 0; i < l; i++) {
+        if (b[i] > a) {
+            a = b[i];
+            index = i;
+        }
+    }
+
+    return b[index];  
+}
+
+float Media(int b[], int l) {
+    float suma = 0;
+
+    for (int i = 0; i < l; i++) {
+        suma += b[i];
+    }
+
+    return suma / l;
+}
+
+float Mediana(int b[], int l) {
+    quicksort(b, 0, l - 1);
+    
+    if (l % 2 == 0) {
+       
+        int intermedio1 = l / 2;
+        int intermedio2 = intermedio1 - 1;
+        return (b[intermedio1] + b[intermedio2]) / 2.0;
+        
+    } else {
+        
+        int intermedio = l / 2;
+        return b[intermedio];
+    }
+}
+
+int Moda(int b[], int l) {
+    int rep = 0; 
+    int moda = b[0]; 
+    for (int i = 0; i < l; i++) {
+        int cont = 0;
+        for (int j = 0; j < l; j++) {
+            if (b[j] == b[i])
+                cont++;
+        }
+        if (cont > rep) {
+            rep = cont;
+            moda = b[i];
+        }
+    }
+    return moda;
+}
+
+int main() {
+    srand(time(NULL));
+
+    int n;
+
+    printf("Cuantos numeros desea ordenar:");
+    scanf("%d", &n);
+
+    int lista[n];
+
+    printf("Lista sin ordenar:\n");
+    for (int i = 0; i < n; i++) {
+        lista[i] = rand() % 30 + 1;
+        printf("%d ", lista[i]);
+    }
+    printf("\n");
+
+    quicksort(lista, 0, n - 1);
+
+    printf("\nLista ordenada:\n");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", lista[i]);
+    }
+
+    min(lista, n);
+    printf("\n\nEl valor minimo en la lista ordenada es: %d\n",min(lista, n));
+    
+    max(lista, n);
+    printf("El valor maximo en la lista ordenada es: %d\n", max(lista, n));
+    
+    Media(lista, n);
+    printf("La media en la lista es: %.2f\n",Media(lista, n));
+    
+    Mediana(lista,n);
+    printf("La mediana en la lista es: %.2f\n",Mediana(lista,n));
+    
+    Moda(lista,n);
+    printf("La moda en la lista es: %d\n",Moda(lista,n));
+    
+    
+	int frecuencias[30];
+    for (int i = 0; i < 30; i++) {
+        frecuencias[i] = 0;
+    }
+
+    // Calcula las frecuencias de los números
+    for (int i = 0; i < n; i++) {
+        frecuencias[lista[i] - 1]++; // Incrementa la frecuencia
+    }
+
+    printf("\nHistograma\n");
+    for (int i = 1; i < 30; i++) {
+        printf("%d: ", i + 1);
+        float probabilidad = 100 * ((float)frecuencias[i] / n);
+        printf("%d", frecuencias[i]);
+        for (int j = 0; j < frecuencias[i]; j++) {
+            printf("*");
+        }
+        printf("\n");
+    }
+
+
+	return 0;
+}
+
